@@ -8,8 +8,9 @@ import MainContent from './components/MainContent';
 import Footer from './components/Footer';
 import UserProfile from './components/UserProfile';
 import Counter from './components/Counter';
-import UserInfo from './components/UserInfo'; // ✅ new component
-import UserContext from './UserContext'; // ✅ context
+import UserInfo from './components/UserInfo';
+
+import UserContext from './UserContext';
 
 function App() {
   const userData = {
@@ -42,7 +43,7 @@ function App() {
           bio="Loves hiking and photography" 
         />
 
-        <UserInfo /> {/* ✅ context-based user info */}
+        <UserInfo /> {/* ✅ Uses Context */}
 
         <Counter />
 
