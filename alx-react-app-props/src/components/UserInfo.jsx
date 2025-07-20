@@ -1,11 +1,15 @@
 // src/components/UserInfo.jsx
-import React from 'react';
-import UserDetails from './UserDetails';
+import { useContext } from 'react';
+import UserContext from '../UserContext';
 
 function UserInfo() {
+  const userData = useContext(UserContext);
+
   return (
     <div>
-      <UserDetails />
+      <h2>User Info</h2>
+      <p>Name: {userData.name}</p>
+      <p>Email: {userData.email}</p>
     </div>
   );
 }
