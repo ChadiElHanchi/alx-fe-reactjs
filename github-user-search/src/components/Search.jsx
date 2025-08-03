@@ -13,7 +13,14 @@ export default function Search() {
 
   const handleSearch = async (e, newPage = 1) => {
     if (e) e.preventDefault();
-    if (!username.trim() && !location.trim() && !minRepos.trim()) {
+
+    // Trim inputs for better query
+    const trimmedUsername = username.trim();
+    const trimmedLocation = location.trim();
+    const trimmedMinRepos = minRepos.toString().trim();
+
+    // Require at least one search criteria
+    if (!trimmedUsername && !trimmedLocation && !trimmedMinRepos) {
       setError('Please enter at least one search criteria');
       return;
     }
@@ -23,14 +30,22 @@ export default function Search() {
 
     try {
       const { items, total_count } = await searchUsersAdvanced({
-        username,
-        location,
-        minRepos,
+        username: trimmedUsername || undefined,
+        location: trimmedLocation || undefined,
+        minRepos: trimmedMinRepos ? Number(trimmedMinRepos) : undefined,
         page: newPage,
       });
-      setUsers(items);
+
+      if (newPage === 1) {
+        setUsers(items);
+      } else {
+        // Append new results on pagination
+        setUsers((prev) => [...prev, ...items]);
+      }
+
       setTotalCount(total_count);
       setPage(newPage);
+
       if (items.length === 0) setError('No users found.');
     } catch (err) {
       setError('Error fetching users.');
@@ -41,7 +56,7 @@ export default function Search() {
   };
 
   const loadMore = () => {
-    if (users.length === 0) return;
+    if (users.length === 0 || users.length >= totalCount) return;
     handleSearch(null, page + 1);
   };
 
@@ -120,7 +135,7 @@ export default function Search() {
                 {user.login}
               </a>
               <p>Score: {user.score.toFixed(2)}</p>
-              {/* Location and repo count require extra calls or embedding info, see note below */}
+              {/* Note: Location and repo count require additional requests or embedding */}
             </div>
           </li>
         ))}
