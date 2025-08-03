@@ -43,7 +43,7 @@ export default function Search() {
       setTotalCount(total_count);
       setPage(newPage);
 
-      if (items.length === 0) setError('No users found.');
+      if (items.length === 0) setError("Looks like we cant find the user");
     } catch (err) {
       setError('Error fetching users.');
       setUsers([]);
@@ -66,7 +66,6 @@ export default function Search() {
   return (
     <div className="max-w-xl mx-auto p-4">
       <form onSubmit={handleSearch} className="space-y-4">
-        {/* ... inputs unchanged ... */}
         <div>
           <label htmlFor="username" className="block font-medium mb-1">Username</label>
           <input
