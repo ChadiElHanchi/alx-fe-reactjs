@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://api.github.com/search/users';
+const GITHUB_SEARCH_USERS = 'https://api.github.com/search/users?q=';  // note the "?q=" here
 
 export async function searchUsersAdvanced({ username, location, minRepos, page = 1 }) {
   const queryParts = [];
@@ -12,11 +12,10 @@ export async function searchUsersAdvanced({ username, location, minRepos, page =
   const query = queryParts.join('+');
   const perPage = 30;
 
-  // Full URL with query parameters (literal string includes "?q=")
-  const url = `${BASE_URL}?q=${encodeURIComponent(query)}&page=${page}&per_page=${perPage}`;
+  // Use the constant with "?q=" included
+  const url = `${GITHUB_SEARCH_USERS}${encodeURIComponent(query)}&page=${page}&per_page=${perPage}`;
 
   const response = await axios.get(url);
 
-  // response.data has shape: { total_count, incomplete_results, items: [...] }
   return response.data;
 }
