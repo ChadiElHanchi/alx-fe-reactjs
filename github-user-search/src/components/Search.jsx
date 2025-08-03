@@ -1,67 +1,139 @@
 import React, { useState } from 'react';
-import { fetchUserData } from '../services/githubService';
+import { searchUsersAdvanced } from '../services/githubService';
 
 export default function Search() {
   const [username, setUsername] = useState('');
-  const [userData, setUserData] = useState(null);
+  const [location, setLocation] = useState('');
+  const [minRepos, setMinRepos] = useState('');
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!username.trim()) return;
+  const handleSearch = async (e, newPage = 1) => {
+    if (e) e.preventDefault();
+    if (!username.trim() && !location.trim() && !minRepos.trim()) {
+      setError('Please enter at least one search criteria');
+      return;
+    }
 
     setLoading(true);
     setError(null);
-    setUserData(null);
 
     try {
-      const data = await fetchUserData(username.trim());
-      setUserData(data);
+      const { items, total_count } = await searchUsersAdvanced({
+        username,
+        location,
+        minRepos,
+        page: newPage,
+      });
+      setUsers(items);
+      setTotalCount(total_count);
+      setPage(newPage);
+      if (items.length === 0) setError('No users found.');
     } catch (err) {
-      setError('Looks like we cant find the user'); // <-- exact string here
+      setError('Error fetching users.');
+      setUsers([]);
     } finally {
       setLoading(false);
     }
   };
 
+  const loadMore = () => {
+    if (users.length === 0) return;
+    handleSearch(null, page + 1);
+  };
+
   return (
-    <div>
-      <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
-        <input
-          type="text"
-          placeholder="Enter GitHub username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          style={{ padding: '0.5rem', width: '70%' }}
-        />
-        <button type="submit" style={{ padding: '0.5rem', marginLeft: '0.5rem' }}>
-          Search
+    <div className="max-w-xl mx-auto p-4">
+      <form onSubmit={handleSearch} className="space-y-4">
+        <div>
+          <label htmlFor="username" className="block font-medium mb-1">
+            Username
+          </label>
+          <input
+            id="username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="GitHub username"
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="location" className="block font-medium mb-1">
+            Location
+          </label>
+          <input
+            id="location"
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="e.g. San Francisco"
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="minRepos" className="block font-medium mb-1">
+            Minimum Repositories
+          </label>
+          <input
+            id="minRepos"
+            type="number"
+            min="0"
+            value={minRepos}
+            onChange={(e) => setMinRepos(e.target.value)}
+            placeholder="e.g. 10"
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          disabled={loading}
+        >
+          {loading ? 'Searching...' : 'Search'}
         </button>
       </form>
 
-      {loading && <p>Loading...</p>}
+      {error && <p className="mt-4 text-red-600">{error}</p>}
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <ul className="mt-6 space-y-4">
+        {users.map((user) => (
+          <li key={user.id} className="flex items-center space-x-4 border p-3 rounded-md">
+            <img
+              src={user.avatar_url}
+              alt={user.login}
+              className="w-16 h-16 rounded-full"
+            />
+            <div>
+              <a
+                href={user.html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 font-semibold hover:underline"
+              >
+                {user.login}
+              </a>
+              <p>Score: {user.score.toFixed(2)}</p>
+              {/* Location and repo count require extra calls or embedding info, see note below */}
+            </div>
+          </li>
+        ))}
+      </ul>
 
-      {userData && (
-        <div style={{ marginTop: '1rem' }}>
-          <img
-            src={userData.avatar_url}
-            alt={userData.login}
-            width={100}
-            style={{ borderRadius: '50%' }}
-          />
-          <h2>{userData.name || userData.login}</h2>
-          <p>
-            <a href={userData.html_url} target="_blank" rel="noopener noreferrer">
-              View GitHub Profile
-            </a>
-          </p>
-          <p>Followers: {userData.followers}</p>
-          <p>Following: {userData.following}</p>
-          <p>Public Repos: {userData.public_repos}</p>
-        </div>
+      {users.length > 0 && users.length < totalCount && (
+        <button
+          onClick={loadMore}
+          disabled={loading}
+          className="mt-4 px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300"
+        >
+          Load More
+        </button>
       )}
     </div>
   );
