@@ -24,3 +24,19 @@ export async function searchUsersAdvanced({ username, location, minRepos, page =
 
   return response.data;
 }
+
+// Add this new function for simple user fetch:
+export async function fetchUserData(username) {
+  const GITHUB_API_KEY = import.meta.env.VITE_APP_GITHUB_API_KEY;
+
+  try {
+    const response = await axios.get(`https://api.github.com/users/${username}`, {
+      headers: {
+        Authorization: `token ${GITHUB_API_KEY}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error('User not found');
+  }
+}
