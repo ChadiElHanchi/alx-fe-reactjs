@@ -11,15 +11,13 @@ export default function Search() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
 
-  const handleSearch = async (e, newPage = 1) => {
-    if (e) e.preventDefault();
-
-    // Trim inputs for better query
+  // This function fetches user data from the API
+  const fetchUserData = async (newPage = 1) => {
+    // Trim inputs for query
     const trimmedUsername = username.trim();
     const trimmedLocation = location.trim();
     const trimmedMinRepos = minRepos.toString().trim();
 
-    // Require at least one search criteria
     if (!trimmedUsername && !trimmedLocation && !trimmedMinRepos) {
       setError('Please enter at least one search criteria');
       return;
@@ -39,7 +37,6 @@ export default function Search() {
       if (newPage === 1) {
         setUsers(items);
       } else {
-        // Append new results on pagination
         setUsers((prev) => [...prev, ...items]);
       }
 
@@ -55,18 +52,23 @@ export default function Search() {
     }
   };
 
+  // Calls fetchUserData on form submit
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchUserData(1);
+  };
+
   const loadMore = () => {
     if (users.length === 0 || users.length >= totalCount) return;
-    handleSearch(null, page + 1);
+    fetchUserData(page + 1);
   };
 
   return (
     <div className="max-w-xl mx-auto p-4">
       <form onSubmit={handleSearch} className="space-y-4">
+        {/* ... inputs unchanged ... */}
         <div>
-          <label htmlFor="username" className="block font-medium mb-1">
-            Username
-          </label>
+          <label htmlFor="username" className="block font-medium mb-1">Username</label>
           <input
             id="username"
             type="text"
@@ -76,11 +78,8 @@ export default function Search() {
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-
         <div>
-          <label htmlFor="location" className="block font-medium mb-1">
-            Location
-          </label>
+          <label htmlFor="location" className="block font-medium mb-1">Location</label>
           <input
             id="location"
             type="text"
@@ -90,11 +89,8 @@ export default function Search() {
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-
         <div>
-          <label htmlFor="minRepos" className="block font-medium mb-1">
-            Minimum Repositories
-          </label>
+          <label htmlFor="minRepos" className="block font-medium mb-1">Minimum Repositories</label>
           <input
             id="minRepos"
             type="number"
@@ -120,11 +116,7 @@ export default function Search() {
       <ul className="mt-6 space-y-4">
         {users.map((user) => (
           <li key={user.id} className="flex items-center space-x-4 border p-3 rounded-md">
-            <img
-              src={user.avatar_url}
-              alt={user.login}
-              className="w-16 h-16 rounded-full"
-            />
+            <img src={user.avatar_url} alt={user.login} className="w-16 h-16 rounded-full" />
             <div>
               <a
                 href={user.html_url}
@@ -135,7 +127,6 @@ export default function Search() {
                 {user.login}
               </a>
               <p>Score: {user.score.toFixed(2)}</p>
-              {/* Note: Location and repo count require additional requests or embedding */}
             </div>
           </li>
         ))}
