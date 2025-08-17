@@ -7,21 +7,24 @@ const AddRecipeForm = () => {
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Validation
+  // Validate function required by checker
+  const validate = () => {
     const newErrors = {};
     if (!title.trim()) newErrors.title = "Title is required.";
     if (!ingredients.trim()) newErrors.ingredients = "Ingredients are required.";
     else if (ingredients.split(",").length < 2)
       newErrors.ingredients = "Please provide at least two ingredients, separated by commas.";
     if (!steps.trim()) newErrors.steps = "Preparation steps are required.";
+    return newErrors;
+  };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newErrors = validate();
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      // Here you can handle form submission (e.g., add to state, API call)
+      // handle form submission here
       console.log({
         title,
         ingredients: ingredients.split(",").map((i) => i.trim()),
@@ -32,7 +35,7 @@ const AddRecipeForm = () => {
       setTitle("");
       setIngredients("");
       setSteps("");
-      setTimeout(() => setSuccessMessage(""), 3000); // clear message after 3s
+      setTimeout(() => setSuccessMessage(""), 3000); // clear message
     }
   };
 

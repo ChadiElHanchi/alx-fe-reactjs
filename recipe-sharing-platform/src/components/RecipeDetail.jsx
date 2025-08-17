@@ -52,10 +52,10 @@ const RecipeDetail = () => {
           <div>
             <h2 className="text-2xl font-semibold mb-2">Instructions</h2>
             <ol className="list-decimal list-inside text-gray-700 space-y-2">
-              {recipe.steps ? (
-                recipe.steps.map((step, index) => <li key={index}>{step}</li>)
+              {recipe.instructions ? (
+                recipe.instructions.map((step, index) => <li key={index}>{step}</li>)
               ) : (
-                <li>No steps available</li>
+                <li>No instructions available</li>
               )}
             </ol>
           </div>
