@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 const TodoList = () => {
   const [todos, setTodos] = useState([
@@ -28,7 +28,7 @@ const TodoList = () => {
 
   return (
     <div>
-      <h2>Todo List</h2>
+      <h1>Todo List</h1>
       <form onSubmit={addTodo}>
         <input
           placeholder="Add new todo"
@@ -41,12 +41,19 @@ const TodoList = () => {
         {todos.map((todo) => (
           <li
             key={todo.id}
-            style={{ textDecoration: todo.completed ? "line-through" : "none" }}
             onClick={() => toggleTodo(todo.id)}
             data-testid={`todo-${todo.id}`}
+            style={{ textDecoration: todo.completed ? "line-through" : "none" }}
           >
             {todo.text}
-            <button onClick={() => deleteTodo(todo.id)}>Delete</button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteTodo(todo.id);
+              }}
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ul>

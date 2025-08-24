@@ -31,10 +31,11 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
     "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
     "vite": "^7.1.2"
   },
   "jest": {
-    "testEnvironment": "jsdom",
+    "testEnvironment": "jest-environment-jsdom",
     "setupFilesAfterEnv": ["<rootDir>/src/setupTests.js"],
     "moduleFileExtensions": ["js", "jsx"],
     "transform": {
