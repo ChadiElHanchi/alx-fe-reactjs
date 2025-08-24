@@ -1,46 +1,25 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Home from "./components/Home.jsx";
-import Profile from "./components/Profile.jsx";
-import ProfileDetails from "./components/ProfileDetails.jsx";
-import ProfileSettings from "./components/ProfileSettings.jsx";
-import User from "./components/User.jsx";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Profile from "./components/Profile";
+import BlogPost from "./components/BlogPost";
 
-// Simulate authentication
-const isAuthenticated = true;
-
-// Protected Route Component
-const ProtectedRoute = ({ children }) => {
-  return isAuthenticated ? children : <Navigate to="/" />;
-};
+const Home = () => <h2>Home Page</h2>;
 
 function App() {
   return (
-    <BrowserRouter>
+    <Router>
+      <nav>
+        <Link to="/">Home</Link> |{" "}
+        <Link to="/profile">Profile</Link> |{" "}
+        <Link to="/blog/1">Blog Post 1</Link>
+      </nav>
+
       <Routes>
         <Route path="/" element={<Home />} />
-
-        {/* Protected Profile route */}
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        >
-          {/* Nested Routes */}
-          <Route path="details" element={<ProfileDetails />} />
-          <Route path="settings" element={<ProfileSettings />} />
-        </Route>
-
-        {/* Dynamic Route for user */}
-        <Route path="/user/:id" element={<User />} />
-
-        {/* Fallback route */}
-        <Route path="*" element={<h2>Page not found</h2>} />
+        <Route path="/profile/*" element={<Profile />} />
+        <Route path="/blog/:id" element={<BlogPost />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
 
