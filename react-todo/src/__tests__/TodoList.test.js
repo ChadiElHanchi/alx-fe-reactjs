@@ -1,7 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import TodoList from "../components/TodoList";
-import "@testing-library/jest-dom";
 
 describe("TodoList component", () => {
   test("renders initial todos", () => {
@@ -24,6 +23,8 @@ describe("TodoList component", () => {
     const todo = screen.getByText("Learn React");
     fireEvent.click(todo);
     expect(todo).toHaveStyle("text-decoration: line-through");
+    fireEvent.click(todo);
+    expect(todo).toHaveStyle("text-decoration: none");
   });
 
   test("deletes a todo", () => {
