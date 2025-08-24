@@ -9,20 +9,20 @@ function TodoList() {
 
   const addTodo = (e) => {
     e.preventDefault();
-    if (newTodo.trim() === "") return;
+    if (!newTodo.trim()) return;
     setTodos([...todos, { text: newTodo, completed: false }]);
     setNewTodo("");
   };
 
   const toggleTodo = (index) => {
-    const updated = todos.map((todo, i) =>
-      i === index ? { ...todo, completed: !todo.completed } : todo
+    setTodos(
+      todos.map((todo, i) =>
+        i === index ? { ...todo, completed: !todo.completed } : todo
+      )
     );
-    setTodos(updated);
   };
 
-  const deleteTodo = (index, e) => {
-    e.stopPropagation(); // <<< Prevent toggle when clicking delete
+  const deleteTodo = (index) => {
     setTodos(todos.filter((_, i) => i !== index));
   };
 
@@ -31,6 +31,7 @@ function TodoList() {
       <h2>Todo List</h2>
       <form onSubmit={addTodo}>
         <input
+          type="text"
           placeholder="New todo"
           value={newTodo}
           onChange={(e) => setNewTodo(e.target.value)}
@@ -47,7 +48,14 @@ function TodoList() {
             }}
           >
             {todo.text}{" "}
-            <button onClick={(e) => deleteTodo(index, e)}>Delete</button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteTodo(index);
+              }}
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ul>
