@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const TodoList = () => {
+export default function TodoList() {
   const [todos, setTodos] = useState([
     "Learn React",
     "Build Todo App"
@@ -51,7 +51,12 @@ const TodoList = () => {
             }}
           >
             {todo}{" "}
-            <button onClick={(e) => { e.stopPropagation(); deleteTodo(index); }}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteTodo(index);
+              }}
+            >
               Delete
             </button>
           </li>
@@ -59,6 +64,4 @@ const TodoList = () => {
       </ul>
     </div>
   );
-};
-
-export default TodoList;
+}
