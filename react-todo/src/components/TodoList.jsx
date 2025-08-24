@@ -1,26 +1,28 @@
 import React, { useState } from "react";
 
 function TodoList() {
-  const [todos, setTodos] = useState(["Learn React", "Build Todo App"]);
+  const [todos, setTodos] = useState([
+    { text: "Learn React", completed: false },
+    { text: "Build Todo App", completed: false },
+  ]);
   const [newTodo, setNewTodo] = useState("");
 
   const addTodo = (e) => {
     e.preventDefault();
-    if (!newTodo) return;
-    setTodos([...todos, newTodo]);
+    if (newTodo.trim() === "") return;
+    setTodos([...todos, { text: newTodo, completed: false }]);
     setNewTodo("");
   };
 
   const toggleTodo = (index) => {
-    const updated = [...todos];
-    updated[index] =
-      updated[index].endsWith("✔")
-        ? updated[index].replace(" ✔", "")
-        : updated[index] + " ✔";
+    const updated = todos.map((todo, i) =>
+      i === index ? { ...todo, completed: !todo.completed } : todo
+    );
     setTodos(updated);
   };
 
-  const deleteTodo = (index) => {
+  const deleteTodo = (index, e) => {
+    e.stopPropagation(); // <<< Prevent toggle when clicking delete
     setTodos(todos.filter((_, i) => i !== index));
   };
 
@@ -41,19 +43,11 @@ function TodoList() {
             key={index}
             onClick={() => toggleTodo(index)}
             style={{
-              cursor: "pointer",
-              textDecoration: todo.endsWith("✔") ? "line-through" : "none",
+              textDecoration: todo.completed ? "line-through" : "none",
             }}
           >
-            {todo}{" "}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                deleteTodo(index);
-              }}
-            >
-              Delete
-            </button>
+            {todo.text}{" "}
+            <button onClick={(e) => deleteTodo(index, e)}>Delete</button>
           </li>
         ))}
       </ul>

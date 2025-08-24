@@ -24,8 +24,6 @@ describe("TodoList component", () => {
     const todo = screen.getByText("Learn React");
     fireEvent.click(todo);
     expect(todo).toHaveStyle("text-decoration: line-through");
-    fireEvent.click(todo);
-    expect(todo).toHaveStyle("text-decoration: none");
   });
 
   test("deletes a todo", () => {

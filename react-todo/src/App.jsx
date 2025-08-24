@@ -1,11 +1,8 @@
 import React, { useState } from "react";
-import TodoList from "./components/TodoList";
+import TodoList from "./components/TodoList"; // ✅ Keep only this one
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-
-// Import the TodoList component
-import TodoList from "./components/TodoList";
 
 function App() {
   const [count, setCount] = useState(0);
