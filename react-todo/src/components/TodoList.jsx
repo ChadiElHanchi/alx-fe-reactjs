@@ -1,31 +1,27 @@
 import React, { useState } from "react";
 
-export default function TodoList() {
-  const [todos, setTodos] = useState([
-    "Learn React",
-    "Build Todo App"
-  ]);
+function TodoList() {
+  const [todos, setTodos] = useState(["Learn React", "Build Todo App"]);
   const [newTodo, setNewTodo] = useState("");
 
   const addTodo = (e) => {
     e.preventDefault();
-    if (newTodo.trim() !== "") {
-      setTodos([...todos, newTodo.trim()]);
-      setNewTodo("");
-    }
+    if (!newTodo) return;
+    setTodos([...todos, newTodo]);
+    setNewTodo("");
   };
 
   const toggleTodo = (index) => {
-    const updatedTodos = [...todos];
-    updatedTodos[index] = updatedTodos[index].includes("✔️")
-      ? updatedTodos[index].replace(" ✔️", "")
-      : updatedTodos[index] + " ✔️";
-    setTodos(updatedTodos);
+    const updated = [...todos];
+    updated[index] =
+      updated[index].endsWith("✔")
+        ? updated[index].replace(" ✔", "")
+        : updated[index] + " ✔";
+    setTodos(updated);
   };
 
   const deleteTodo = (index) => {
-    const updatedTodos = todos.filter((_, i) => i !== index);
-    setTodos(updatedTodos);
+    setTodos(todos.filter((_, i) => i !== index));
   };
 
   return (
@@ -33,7 +29,6 @@ export default function TodoList() {
       <h2>Todo List</h2>
       <form onSubmit={addTodo}>
         <input
-          type="text"
           placeholder="New todo"
           value={newTodo}
           onChange={(e) => setNewTodo(e.target.value)}
@@ -47,7 +42,7 @@ export default function TodoList() {
             onClick={() => toggleTodo(index)}
             style={{
               cursor: "pointer",
-              textDecoration: todo.includes("✔️") ? "line-through" : "none"
+              textDecoration: todo.endsWith("✔") ? "line-through" : "none",
             }}
           >
             {todo}{" "}
@@ -65,3 +60,5 @@ export default function TodoList() {
     </div>
   );
 }
+
+export default TodoList;
