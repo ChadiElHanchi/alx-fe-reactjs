@@ -10,19 +10,20 @@ function TodoList() {
   const addTodo = (e) => {
     e.preventDefault();
     if (newTodo.trim() === "") return;
-    setTodos([...todos, newTodo]);
+    setTodos([...todos, newTodo.trim()]);
     setNewTodo("");
   };
 
   const toggleTodo = (index) => {
-    const updated = [...todos];
-    updated[index] = updated[index].includes("✔") ? updated[index].replace("✔", "") : updated[index] + "✔";
-    setTodos(updated);
+    const updatedTodos = todos.map((todo, i) =>
+      i === index ? { ...todo, completed: !todo.completed } : todo
+    );
+    setTodos(updatedTodos);
   };
 
   const deleteTodo = (index) => {
-    const updated = todos.filter((_, i) => i !== index);
-    setTodos(updated);
+    const updatedTodos = todos.filter((_, i) => i !== index);
+    setTodos(updatedTodos);
   };
 
   return (
@@ -43,11 +44,12 @@ function TodoList() {
             key={index}
             onClick={() => toggleTodo(index)}
             style={{
-              textDecoration: todo.includes("✔") ? "line-through" : "none",
               cursor: "pointer",
+              textDecoration: todo.completed ? "line-through" : "none"
             }}
           >
-            {todo} <button onClick={() => deleteTodo(index)}>Delete</button>
+            {todo.text || todo}
+            <button onClick={() => deleteTodo(index)}>Delete</button>
           </li>
         ))}
       </ul>
