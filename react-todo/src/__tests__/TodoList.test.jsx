@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import TodoList from "../components/TodoList";
 
-describe("TodoList Component", () => {
+describe("TodoList component", () => {
   test("renders initial todos", () => {
     render(<TodoList />);
     expect(screen.getByText("Learn React")).toBeInTheDocument();
@@ -11,16 +11,14 @@ describe("TodoList Component", () => {
 
   test("adds a new todo", () => {
     render(<TodoList />);
-    const input = screen.getByPlaceholderText("Add new todo");
+    const input = screen.getByPlaceholderText("New todo");
     const button = screen.getByText("Add");
-
-    fireEvent.change(input, { target: { value: "New Task" } });
+    fireEvent.change(input, { target: { value: "Test Todo" } });
     fireEvent.click(button);
-
-    expect(screen.getByText("New Task")).toBeInTheDocument();
+    expect(screen.getByText("Test Todo")).toBeInTheDocument();
   });
 
-  test("toggles a todo's completion", () => {
+  test("toggles a todo completion", () => {
     render(<TodoList />);
     const todo = screen.getByText("Learn React");
     fireEvent.click(todo);
