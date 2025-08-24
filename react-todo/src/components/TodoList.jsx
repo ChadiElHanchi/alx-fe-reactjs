@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function TodoList() {
+const TodoList = () => {
   const [todos, setTodos] = useState([
     "Learn React",
     "Build Todo App"
@@ -9,15 +9,17 @@ function TodoList() {
 
   const addTodo = (e) => {
     e.preventDefault();
-    if (newTodo.trim() === "") return;
-    setTodos([...todos, newTodo.trim()]);
-    setNewTodo("");
+    if (newTodo.trim() !== "") {
+      setTodos([...todos, newTodo.trim()]);
+      setNewTodo("");
+    }
   };
 
   const toggleTodo = (index) => {
-    const updatedTodos = todos.map((todo, i) =>
-      i === index ? { ...todo, completed: !todo.completed } : todo
-    );
+    const updatedTodos = [...todos];
+    updatedTodos[index] = updatedTodos[index].includes("✔️")
+      ? updatedTodos[index].replace(" ✔️", "")
+      : updatedTodos[index] + " ✔️";
     setTodos(updatedTodos);
   };
 
@@ -45,16 +47,18 @@ function TodoList() {
             onClick={() => toggleTodo(index)}
             style={{
               cursor: "pointer",
-              textDecoration: todo.completed ? "line-through" : "none"
+              textDecoration: todo.includes("✔️") ? "line-through" : "none"
             }}
           >
-            {todo.text || todo}
-            <button onClick={() => deleteTodo(index)}>Delete</button>
+            {todo}{" "}
+            <button onClick={(e) => { e.stopPropagation(); deleteTodo(index); }}>
+              Delete
+            </button>
           </li>
         ))}
       </ul>
     </div>
   );
-}
+};
 
 export default TodoList;
